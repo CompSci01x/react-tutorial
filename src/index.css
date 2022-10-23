@@ -7,29 +7,31 @@ ol, ul {
   padding-left: 30px;
 }
 
-.board-row:after {
-  clear: both;
-  content: "";
-  display: table;
+li {
+  padding: 3px;
 }
 
 .status {
   margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 20px;
 }
 
 .square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
+  border: 1px solid black;
+  height: 50px;
+  width: 50px;
   font-size: 24px;
   font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
   text-align: center;
-  width: 34px;
+}
+
+.row-label {
+  border: 0px;
+  font-weight: bold;
+  height: 50px; 
+  width: 25px;
 }
 
 .square:focus {
