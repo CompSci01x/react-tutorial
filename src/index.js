@@ -62,7 +62,7 @@ class Board extends React.Component {
 // * --- Game Section --- 
 class Game extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       history: [{
         squares: Array(9).fill(null),
@@ -70,7 +70,8 @@ class Game extends React.Component {
         row: 0
       }],
       stepNumber: 0,
-      xIsNext: true
+      xIsNext: true,
+      selectedMove: null
     };
   }
 
@@ -92,14 +93,16 @@ class Game extends React.Component {
         row: Math.trunc(i / 3)
       }]),
       stepNumber: history.length,
-      xIsNext: !this.state.xIsNext
+      xIsNext: !this.state.xIsNext,
+      selectedMove: null
     });
   }
 
   jumpTo(step) {
     this.setState({
       stepNumber: step,
-      xIsNext: (step % 2) === 0
+      xIsNext: (step % 2) === 0,
+      selectedMove: step
     });
   }
 
@@ -114,11 +117,13 @@ class Game extends React.Component {
         'Go to game start';
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button 
+            className={this.state.selectedMove === move ? "highlight" : "no-highlight"} 
+            onClick={() => this.jumpTo(move)}
+          >{desc}</button>
         </li>
       );
     });
-
 
     let status;
     if (winner) {

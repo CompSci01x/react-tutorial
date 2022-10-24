@@ -50,3 +50,12 @@ li {
 .game-info {
   margin-left: 20px;
 }
+
+.highlight {
+  background-color: greenyellow;
+  border-color: greenyellow;
+}
+
+.no-highlight {
+  color: black
+}
