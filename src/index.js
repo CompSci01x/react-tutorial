@@ -2,6 +2,38 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  for (let i = 0; i < lines.length; i++) {
+    const [a,b,c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
+
+function colLabel(i) {
+  switch(i) {
+    case 0:
+      return 'A'
+    case 1:
+      return 'B'
+    case 2:
+      return 'C'
+  }
+}
+
 // * --- Square Section ---
 function Square(props) {
   return (
@@ -16,9 +48,56 @@ class Board extends React.Component {
   renderSquare(i) {
     return (
       <Square
+        key={i}
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
       />
+    );
+  }
+
+  renderRow(rowLabel, rowObj) {
+    const row = [];
+    // create row label
+    row.push(
+      <th key={`rowLabel-${rowLabel}`} className="row-label">{rowLabel}</th> 
+    );
+
+    for (let i = rowObj.start; i < rowObj.end; i++) {
+      row.push(this.renderSquare(i))
+    }
+    return row;
+  }
+
+
+  createRows() {
+    const rows = [];
+    for (let i = 0; i < 9; i+=3) {
+      rows.push(
+        <tr key={i}>
+          {this.renderRow(i/3, {start: i, end: i+3})}
+        </tr>
+      );
+  }
+  return rows;
+}
+
+  createColHeaders() {
+    const colHeaders = [];
+
+    // create a placeholder col label
+    colHeaders.push(
+      <th key={`colLabel-placeholder`}></th>
+    );
+
+    for (let i = 0; i < 3; i++) {
+      colHeaders.push(
+        <th key={`colLabel-${i}`}>
+          {colLabel(i)}
+        </th>
+      );
+    }
+    return (
+      <tr>{colHeaders}</tr>
     );
   }
 
@@ -28,30 +107,8 @@ class Board extends React.Component {
         <div className="status"></div>
         <table>
           <tbody>
-            <tr>
-              <th></th>
-              <th>0</th>
-              <th>1</th>
-              <th>2</th>
-            </tr>
-            <tr>
-            <td className='row-label'>0</td>
-              {this.renderSquare(0)}
-              {this.renderSquare(1)}
-              {this.renderSquare(2)}
-            </tr>
-            <tr>
-            <td className='row-label'>1</td>
-              {this.renderSquare(3)}
-              {this.renderSquare(4)}
-              {this.renderSquare(5)}
-            </tr>
-            <tr>
-            <td className='row-label'>2</td>
-              {this.renderSquare(6)}
-              {this.renderSquare(7)}
-              {this.renderSquare(8)}
-            </tr>
+            {this.createColHeaders()}
+            {this.createRows()}
           </tbody>
         </table>
       </div>
@@ -66,8 +123,8 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
-        col: 0,
-        row: 0
+        col: null,
+        row: null
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -85,7 +142,6 @@ class Game extends React.Component {
     }
 
     squares[i] = this.state.xIsNext ? 'X' : 'O';
-    
     this.setState({
       history: history.concat([{
         squares: squares,
@@ -113,12 +169,12 @@ class Game extends React.Component {
     
     const moves = history.map((step, move) => {
       const desc = move ?
-        `Go to move #${move} (col: ${step.col}, row: ${step.row})` :
+        `Go to move #${move} (col: ${colLabel(step.col)}, row: ${step.row})` :
         'Go to game start';
       return (
         <li key={move}>
-          <button 
-            className={this.state.selectedMove === move ? "highlight" : "no-highlight"} 
+          <button
+            className={this.state.selectedMove === move ? "highlight" : "no-highlight"}
             onClick={() => this.jumpTo(move)}
           >{desc}</button>
         </li>
@@ -147,27 +203,6 @@ class Game extends React.Component {
       </div>
     );
   }
-}
-
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-
-  for (let i = 0; i < lines.length; i++) {
-    const [a,b,c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
 }
 
 // ========================================
