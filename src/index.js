@@ -68,7 +68,6 @@ class Board extends React.Component {
     return row;
   }
 
-
   createRows() {
     const rows = [];
     for (let i = 0; i < 9; i+=3) {
@@ -128,7 +127,8 @@ class Game extends React.Component {
       }],
       stepNumber: 0,
       xIsNext: true,
-      selectedMove: null
+      selectedMove: null,
+      isDescendingSortOrder: false
     };
   }
 
@@ -162,15 +162,40 @@ class Game extends React.Component {
     });
   }
 
+  changeSortOrder() {
+    this.setState({
+      isDescendingSortOrder: !this.state.isDescendingSortOrder
+    });
+  }
+
+  listOrder(moves) {
+    if (this.state.isDescendingSortOrder) {
+      return(
+        <ol start={moves.length - 1} reversed> {moves} </ol>
+      );
+    }
+    return(
+      <ol start={0}> {moves} </ol>
+    );
+  }
+
   render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
+    const current = this.state.history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
     
-    const moves = history.map((step, move) => {
+    const historyCopy = this.state.isDescendingSortOrder ? 
+    this.state.history.slice().reverse() : 
+    this.state.history.slice();
+
+    const moves = historyCopy.map((step, move) => {
+      if (this.state.isDescendingSortOrder) {
+        move = (historyCopy.length - 1) - move
+      }
+      
       const desc = move ?
-        `Go to move #${move} (col: ${colLabel(step.col)}, row: ${step.row})` :
-        'Go to game start';
+      `Go to move #${move} (col: ${colLabel(step.col)}, row: ${step.row})` :
+      'Go to game start';
+      
       return (
         <li key={move}>
           <button
@@ -181,12 +206,11 @@ class Game extends React.Component {
       );
     });
 
-    let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
+    const status = winner ? 
+    'Winner: ' + winner : 
+    'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    
+    const sortOrder = this.state.isDescendingSortOrder ? "Sort in ascending order" : "Sort in descending order"
 
     return (
       <div className="game">
@@ -197,8 +221,13 @@ class Game extends React.Component {
           />
         </div>
         <div className="game-info">
-          <div className="status">{status}</div>
-          <ol>{moves}</ol>
+          <div className="status"> {status} </div>
+          <div className="status">
+            <button onClick={() => this.changeSortOrder()}>
+              {sortOrder}
+            </button>
+          </div>
+          {this.listOrder(moves)}
         </div>
       </div>
     );
