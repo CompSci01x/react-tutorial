@@ -17,7 +17,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a,b,c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return {symbol: squares[a], squares: [a,b,c]}
     }
   }
   return null;
@@ -37,7 +37,10 @@ function colLabel(i) {
 // * --- Square Section ---
 function Square(props) {
   return (
-    <td className="square" onClick={props.onClick}>
+    <td 
+      className={props.isWinningSquare ? "square-highlight" : "square"} 
+      onClick={props.onClick}
+      >
       {props.value}
     </td>
   );
@@ -50,6 +53,7 @@ class Board extends React.Component {
       <Square
         key={i}
         value={this.props.squares[i]}
+        isWinningSquare={this.props.winningSquares.includes(i)}
         onClick={() => this.props.onClick(i)}
       />
     );
@@ -179,10 +183,7 @@ class Game extends React.Component {
     );
   }
 
-  render() {
-    const current = this.state.history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
-    
+  render() {    
     const historyCopy = this.state.isDescendingSortOrder ? 
     this.state.history.slice().reverse() : 
     this.state.history.slice();
@@ -206,8 +207,10 @@ class Game extends React.Component {
       );
     });
 
+    const current = this.state.history[this.state.stepNumber];
+    const winner = calculateWinner(current.squares);
     const status = winner ? 
-    'Winner: ' + winner : 
+    'Winner: ' + winner.symbol : 
     'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     
     const sortOrder = this.state.isDescendingSortOrder ? "Sort in ascending order" : "Sort in descending order"
@@ -217,6 +220,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
+            winningSquares={winner ? winner.squares : []}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
