@@ -183,7 +183,7 @@ class Game extends React.Component {
     );
   }
 
-  render() {    
+  render() {
     const historyCopy = this.state.isDescendingSortOrder ? 
     this.state.history.slice().reverse() : 
     this.state.history.slice();
@@ -209,9 +209,15 @@ class Game extends React.Component {
 
     const current = this.state.history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
-    const status = winner ? 
-    'Winner: ' + winner.symbol : 
-    'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner.symbol
+    } else if (this.state.stepNumber < 9) {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    } else {
+      status = 'Draw'
+    }
     
     const sortOrder = this.state.isDescendingSortOrder ? "Sort in ascending order" : "Sort in descending order"
 
