@@ -11,6 +11,10 @@ at the end of the tutorial: https://reactjs.org/tutorial/tutorial.html#wrapping-
 4. Add a toggle button that lets you sort the moves in either ascending or descending order. ✅
 5. When someone wins, highlight the three squares that caused the win. ✅
 6. When no one wins, display a message about the result being a draw. ✅
+
+## App Demo
+<img src="https://github.com/CompSci01x/react-tutorial/blob/main/app-demo/demo.gif" width="400" height="300">
+
 ---
 
 ## Getting Started with Create React App
