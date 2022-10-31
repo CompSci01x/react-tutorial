@@ -13,7 +13,7 @@ at the end of the tutorial: https://reactjs.org/tutorial/tutorial.html#wrapping-
 6. When no one wins, display a message about the result being a draw. ✅
 
 ## App Demo
-<img src="https://github.com/CompSci01x/react-tutorial/blob/main/app-demo/demo.gif" width="400" height="300">
+<img src="https://github.com/CompSci01x/react-tutorial/blob/main/app-demo/demo.gif" width="450" height="350">
 
 ---
 
